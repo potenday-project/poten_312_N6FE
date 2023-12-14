@@ -6,9 +6,17 @@ export default function Login() {
     window.location.href = kakaoLoginURL;
   };
 
-  const kakaoClientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
+  const onClickNaverLogin = () => {
+    window.location.href = naverLoginURL;
+  };
+
+  const naverClientID = process.env.REACT_APP_NAVER_CLIENT_ID;
+  const naverRedirectURI = process.env.REACT_APP_NAVER_REDIRECT_URI;
+  const naverLoginURL = `https://nid.naver.com/oauth2.0/authorize?client_id=${naverClientID}&response_type=code&redirect_uri=${naverRedirectURI}`;
+
+  const kakaoClientID = process.env.REACT_APP_KAKAO_CLIENT_ID;
   const kakaoRedirectURI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
-  const kakaoLoginURL = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${kakaoRedirectURI}&response_type=code`;
+  const kakaoLoginURL = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientID}&redirect_uri=${kakaoRedirectURI}&response_type=code`;
 
   return (
     <LoginPageContainer>
@@ -24,7 +32,9 @@ export default function Login() {
       </LoginTitleContainer>
 
       <SocialLoginContainer>
-        <NaverLoginBtn>네이버로 로그인하기</NaverLoginBtn>
+        <NaverLoginBtn onClick={onClickNaverLogin}>
+          네이버로 로그인하기
+        </NaverLoginBtn>
         <KakaoLoginBtn onClick={onClickKakaoLogin}>
           카카오톡으로 로그인하기
         </KakaoLoginBtn>
