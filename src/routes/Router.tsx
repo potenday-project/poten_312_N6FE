@@ -3,6 +3,7 @@ import DefaultLayout from 'layout/DefaultLayout';
 import Login from 'pages/Login';
 import Home from 'pages/Home';
 import KakaoOauth from 'component/home/KakaoOauth';
+import NaverOauth from 'component/home/NaverOauth';
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +16,10 @@ export const router = createBrowserRouter([
       { path: '/login', element: <Login /> },
       {
         path: '/oauth',
-        children: [{ path: 'kakao', element: <KakaoOauth /> }],
+        children: [
+          { path: 'kakao', element: <KakaoOauth /> },
+          { path: 'naver', element: <NaverOauth /> },
+        ],
       },
     ],
   },
