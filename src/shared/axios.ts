@@ -44,10 +44,10 @@ instance.interceptors.response.use(
       return axios(originalRequest);
     }
     if (response.status === 404) {
-      return window.location.replace('/notfound');
+      // return window.location.replace('/notfound');
     }
     if (response.status === 504) {
-      return window.location.replace('/connectfail');
+      // return window.location.replace('/connectfail');
     }
     if (response.status === 400) {
       return response;
