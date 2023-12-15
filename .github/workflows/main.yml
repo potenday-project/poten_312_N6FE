@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
+      REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
       REACT_APP_NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
       REACT_APP_NAVER_REDIRECT_URI: ${{ secrets.NAVER_REDIRECT_URI }}
       REACT_APP_KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
@@ -43,6 +44,7 @@ jobs:
           echo "REACT_APP_REGION=$REACT_APP_REGION" >> .env.production
 
         env:
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
           REACT_APP_NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           REACT_APP_NAVER_REDIRECT_URI: ${{ secrets.NAVER_REDIRECT_URI }}
           REACT_APP_KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
