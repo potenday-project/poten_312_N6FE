@@ -9,7 +9,7 @@ const instance = axios.create({ baseURL });
 const setToken = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  config.headers['Authorization'] = `Bearer ${token}`;
+  config.headers['Authorization'] = `${token}`;
   return config;
 };
 
@@ -19,7 +19,7 @@ if (token) {
 
 instance.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   async (error) => {
     const { response, config } = error;
@@ -52,7 +52,10 @@ instance.interceptors.response.use(
     if (response.status === 400) {
       return response;
     }
-    return Promise.reject(error);
+    if (response.status === 500) {
+      return response;
+    }
+    return response;
   }
 );
 
