@@ -1,0 +1,29 @@
+<svg width="115" height="144" viewBox="0 0 115 144" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_dii_184_9478)">
+<path d="M6.5 19.451C6.5 12.0222 11.8726 6 18.5 6H84.5C91.1274 6 96.5 12.0222 96.5 19.451V112.524C96.5 123.802 84.8608 130.073 77.0037 123.027L58.9963 106.879C54.6137 102.949 48.3863 102.949 44.0037 106.879L25.9963 123.027C18.1392 130.073 6.5 123.802 6.5 112.524V19.451Z" fill="#F2F2F2"/>
+</g>
+<defs>
+<filter id="filter0_dii_184_9478" x="-1.5" y="-2" width="116" height="146" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="6" dy="6"/>
+<feGaussianBlur stdDeviation="6"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.793343 0 0 0 0 0.793343 0 0 0 0 0.793343 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_184_9478"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_184_9478" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="8" dy="8"/>
+<feGaussianBlur stdDeviation="8"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.699414 0 0 0 0 0.699414 0 0 0 0 0.699414 0 0 0 0.2 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow_184_9478"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="-8" dy="-8"/>
+<feGaussianBlur stdDeviation="8"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.999398 0 0 0 0 0.999398 0 0 0 0 0.999398 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect2_innerShadow_184_9478" result="effect3_innerShadow_184_9478"/>
+</filter>
+</defs>
+</svg>
