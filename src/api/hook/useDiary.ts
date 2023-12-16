@@ -10,6 +10,15 @@ export function useGetDiary(diaryId: number) {
   });
 }
 
+export function useGetMonthlyDiary(month: string) {
+  return useQuery({
+    queryKey: ['diaryMonth', month],
+    queryFn: () => {
+      return diaryApis.getMonthlyDiary(month);
+    },
+  });
+}
+
 export function usePostDiary() {
   return useMutation({
     mutationFn: (diaryData: IDiaryData) => {
