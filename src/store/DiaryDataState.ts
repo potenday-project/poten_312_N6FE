@@ -1,7 +1,10 @@
-import { diaryContent } from 'api/diaryApis';
 import { atom } from 'recoil';
 
-export const DiaryDataState = atom<diaryContent>({
+interface DiaryContent {
+  content: string;
+}
+
+export const DiaryDataState = atom<DiaryContent>({
   key: 'DiaryDataState',
   default: { content: '' },
 });

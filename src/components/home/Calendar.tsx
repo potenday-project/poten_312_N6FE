@@ -8,9 +8,18 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useGetMonthlyDiary } from 'api/hook/useDiary';
 import { AddIcon } from 'assets/home';
-import { MonthlyDiaryRespose } from 'api/diaryApis';
 import { useNavigate } from 'react-router-dom';
 import locale from 'dayjs/locale/ko';
+
+export interface MonthlyDiaryRespose {
+  id: number;
+  emotion: string[];
+  summary: string;
+  content: string;
+  writingDay: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useRecoilState(CurrentDateState);

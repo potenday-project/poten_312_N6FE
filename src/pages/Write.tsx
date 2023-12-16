@@ -1,13 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { CurrentDateState } from 'store/CurrentDateState';
 import { ReactComponent as CancleIcon } from 'assets/write/cancel.svg';
 import styled from 'styled-components';
 import { DiaryDataState } from 'store/DiaryDataState';
+import { ReactComponent as OpenModalIcon } from 'assets/dateSelect/openModal.svg';
+import DateSelectModal from 'components/common/DateSelectModal';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
   const navigate = useNavigate();
   const contentRef = useRef(null);
@@ -18,12 +22,24 @@ export default function Write() {
 
   return (
     <WritePageContainer>
+      {/* <DateSelectModal
+        isOpen={true}
+        closeFn={() => {
+          setIsOpen(false);
+        }}
+      /> */}
       <WritePageMenu>
         <IconBtn onClick={() => navigate(-1)}>
           <CancleIcon />
         </IconBtn>
-        {currentDate.format('YY')}년 {currentDate.month() + 1}월
-        {currentDate.date()}일
+        <WritingDayTitle>
+          <div>
+            {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}월&nbsp;
+            {currentDate.date()}일
+          </div>
+          <OpenModalIcon />
+        </WritingDayTitle>
+
         <AnalyzeBtn
           onClick={() => {
             console.log(diaryData.content);
@@ -45,8 +61,18 @@ export default function Write() {
 }
 
 export const WritePageContainer = styled.div`
+  padding-top: 44px;
   width: 100%;
   min-height: 100vh;
+`;
+
+export const WritingDayTitle = styled.div`
+  color: #1a1a1a;
+  font-weight: 600;
+  gap: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const AnalyzeBtn = styled.button`
