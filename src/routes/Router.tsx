@@ -5,6 +5,7 @@ import Home from 'pages/Home';
 import KakaoOauth from 'components/login/KakaoOauth';
 import NaverOauth from 'components/login/NaverOauth';
 import MainLayout from 'layout/MainLayout';
+import Write from 'pages/Write';
 
 export const router = createBrowserRouter([
   {
@@ -12,11 +13,9 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <MainLayout />,
-        children: [
-          { path: '/', element: <Home /> },
-          { path: '/bookmark', element: <>bookmakr</> },
-        ],
+        children: [{ path: '/', element: <Home /> }],
       },
+      { path: '/write', element: <Write /> },
       { path: '/login', element: <Login /> },
       {
         path: '/oauth',

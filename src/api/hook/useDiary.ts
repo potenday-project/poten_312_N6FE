@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { IDiaryData, diaryApis } from '../diaryApis';
+import { postDiaryData, diaryApis } from '../diaryApis';
 
 export function useGetDiary(diaryId: number) {
   return useQuery({
@@ -12,7 +12,7 @@ export function useGetDiary(diaryId: number) {
 
 export function usePostDiary() {
   return useMutation({
-    mutationFn: (diaryData: IDiaryData) => {
+    mutationFn: (diaryData: postDiaryData) => {
       return diaryApis.postDiary(diaryData);
     },
   });
