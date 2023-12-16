@@ -1,31 +1,44 @@
 import instance from 'shared/axios';
 
-export interface diaryContent {
+export interface DiaryContent {
   content: string;
 }
-export interface diaryData extends diaryContent {
+export interface DiaryData extends DiaryContent {
   summary: string;
   emotion: string[];
 }
 
-export interface postDiaryData extends diaryData {
+export interface PostDiaryData extends DiaryData {
   writingDay: string;
 }
 
-export interface editDiaryData extends diaryData {
+export interface EditDiaryData extends DiaryData {
   id: number;
 }
 
+export interface MonthlyDiaryRespose {
+  id: number;
+  emotion: string[];
+  summary: string;
+  content: string;
+  writingDay: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const diaryApis = {
+  getMonthlyDiary: async (month: string): Promise<MonthlyDiaryRespose[]> =>
+    await instance.get(`/api/diary/list?month=${month}`),
+
   getDiary: async (diaryId: number) =>
-    await instance.get(`/api/dairy/${diaryId}`),
+    await instance.get(`/api/diary/${diaryId}`),
 
-  postDiary: async (diaryData: postDiaryData) =>
-    await instance.post(`/api/dairy`, diaryData),
+  postDiary: async (diaryData: PostDiaryData) =>
+    await instance.post(`/api/diary`, diaryData),
 
-  editDiary: async (diaryData: editDiaryData) =>
-    await instance.put(`/api/dairy`, diaryData),
+  editDiary: async (diaryData: EditDiaryData) =>
+    await instance.put(`/api/diary`, diaryData),
 
   deleteDiary: async (diaryId: number) =>
-    await instance.delete(`/api/dairy/${diaryId}`),
+    await instance.delete(`/api/diary/${diaryId}`),
 };
