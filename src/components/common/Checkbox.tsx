@@ -1,4 +1,5 @@
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import { CheckMarkIcon } from 'assets/common';
 import { forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -8,7 +9,6 @@ interface CheckboxProps
   onChange: (checked: boolean) => void;
 }
 
-// TODO: 체크 아이콘 추가
 const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
   ({ checked, onChange, ...props }, ref) => {
     return (
@@ -18,7 +18,9 @@ const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         ref={ref}
         {...props}
       >
-        <RadixCheckbox.Indicator></RadixCheckbox.Indicator>
+        <RadixCheckbox.Indicator>
+          <StyledCheckMarkIcon />
+        </RadixCheckbox.Indicator>
       </StyledRadixCheckbox>
     );
   }
@@ -28,6 +30,7 @@ const StyledRadixCheckbox = styled(RadixCheckbox.Root)`
   width: 16px;
   height: 16px;
   display: flex;
+  justify-content: center;
   align-items: center;
   border: 2px solid #666666;
   border-radius: 4px;
@@ -39,6 +42,12 @@ const StyledRadixCheckbox = styled(RadixCheckbox.Root)`
     css`
       background-color: #666666;
     `}
+`;
+
+const StyledCheckMarkIcon = styled(CheckMarkIcon)`
+  width: 10px;
+  height: 10px;
+  color: white;
 `;
 
 export default Checkbox;
