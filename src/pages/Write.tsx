@@ -21,12 +21,12 @@ export default function Write() {
 
   return (
     <WritePageContainer>
-      {/* <DateSelectModal
-        isOpen={true}
+      <DateSelectModal
+        isOpen={isOpen}
         closeFn={() => {
           setIsOpen(false);
         }}
-      /> */}
+      />
       <WritePageMenu>
         <IconBtn onClick={() => navigate(-1)}>
           <CancleIcon />
@@ -36,7 +36,7 @@ export default function Write() {
             {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}월&nbsp;
             {currentDate.date()}일
           </div>
-          <OpenModalIcon />
+          <OpenModalIcon onClick={() => setIsOpen(true)} />
         </WritingDayTitle>
 
         <AnalyzeBtn
@@ -63,6 +63,7 @@ export const WritePageContainer = styled.div`
   padding-top: 44px;
   width: 100%;
   min-height: 100vh;
+  position: relative;
 `;
 
 export const WritingDayTitle = styled.div`
