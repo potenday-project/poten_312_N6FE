@@ -11,6 +11,10 @@ export interface EditDiaryData extends Partial<DiaryData> {
   id: number;
 }
 
+export interface EditDiaryData extends Partial<DiaryData> {
+  id: number;
+}
+
 // TODO: 서버 api 추가 이후 enum으로 변경
 export const emotionSchema = yup.string().required();
 

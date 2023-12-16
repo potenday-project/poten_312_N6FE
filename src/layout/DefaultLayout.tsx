@@ -25,6 +25,4 @@ const DefaultLayoutContainer = styled.div`
   max-width: 375px;
   min-height: 100vh;
   margin: auto;
-
-  /* background-color: aliceblue; */
 `;

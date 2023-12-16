@@ -1,23 +1,57 @@
-import dayjs from 'dayjs';
-import { useRecoilValue } from 'recoil';
+import dayjs, { Dayjs } from 'dayjs';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { CurrentDateState } from 'store/CurrentDateState';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import objectPlugin from 'dayjs/plugin/toObject';
 import isTodayPlugin from 'dayjs/plugin/isToday';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useGetMonthlyDiary } from 'api/hook/useDiary';
+import { AddIcon } from 'assets/home';
+import { useNavigate } from 'react-router-dom';
+import locale from 'dayjs/locale/ko';
+
+export interface MonthlyDiaryRespose {
+  id: number;
+  emotion: string[];
+  summary: string;
+  content: string;
+  writingDay: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function Calendar() {
-  const currentDate = useRecoilValue(CurrentDateState);
+  const [currentDate, setCurrentDate] = useRecoilState(CurrentDateState);
   const [arrayOfDays, setArrayOfDays] = useState<any>([]);
+  const navigate = useNavigate();
+  const [loggedDate, SetLoggedDate] =
+    useState<Map<number, MonthlyDiaryRespose>>();
 
   dayjs.extend(weekdayPlugin);
   dayjs.extend(objectPlugin);
   dayjs.extend(isTodayPlugin);
 
+  const { data: monthly } = useGetMonthlyDiary(currentDate.format('YYYY-MM'));
+
   useEffect(() => {
     getAllDays();
   }, [currentDate]);
+
+  useEffect(() => {
+    monthly &&
+      SetLoggedDate(
+        new Map(monthly.map((item) => [dayjs(item.updatedAt).date(), item]))
+      );
+  }, [monthly]);
+
+  const onClickDate = (isLogged: boolean, id?: number, date?: string) => {
+    if (isLogged) navigate(`/diary/${id}`);
+    else {
+      setCurrentDate(dayjs(date).locale({ ...locale }));
+      navigate(`/write`);
+    }
+  };
 
   const renderDays = () => {
     const dateFormat = 'dd';
@@ -66,20 +100,30 @@ export default function Calendar() {
 
     arrayOfDays.forEach((week: any, index: number) => {
       week.dates.forEach((d: any, i: number) => {
+        const checkToday = () => {
+          if (!d.isCurrentMonth) return 'hidden';
+          else if (d.isCurrentDay) return 'today';
+          else if (d.isFuture) return 'disabled';
+        };
+
+        const checkDiary = () => {
+          if (loggedDate?.get(d.day)) return 'logged';
+        };
+
         days.push(
           <DayContainer
-            className={
-              !d.isCurrentMonth
-                ? 'hidden'
-                : d.isCurrentDay
-                ? 'today'
-                : d.isFuture
-                ? 'disabled'
-                : ''
-            }
+            className={`${checkToday()} ${checkDiary()}`}
+            onClick={() => {
+              if (d.isCurrentMonth && !d.isFuture)
+                onClickDate(
+                  loggedDate?.get(d.day) !== undefined,
+                  loggedDate?.get(d.day)?.id,
+                  `${d.year}-${d.month + 1}-${d.day}`
+                );
+            }}
             key={i}
           >
-            <DailyEmotion />
+            <DailyEmotion>{d.isCurrentDay && <AddIcon />}</DailyEmotion>
             <DateNumber>{d.day}</DateNumber>
           </DayContainer>
         );
@@ -135,6 +179,10 @@ const DailyEmotion = styled.div`
   width: 36px;
   height: 36px;
   border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const DayContainer = styled.div`
@@ -162,6 +210,14 @@ const DayContainer = styled.div`
     & > ${DateNumber} {
       background-color: #ffffff;
       color: #000000;
+    }
+  }
+
+  &.logged {
+    cursor: pointer;
+
+    & > ${DailyEmotion} {
+      background: linear-gradient(red, blue);
     }
   }
 `;
