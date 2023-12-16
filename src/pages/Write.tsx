@@ -6,7 +6,6 @@ import { ReactComponent as CancleIcon } from 'assets/write/cancel.svg';
 import styled from 'styled-components';
 import { DiaryDataState } from 'store/DiaryDataState';
 import { ReactComponent as OpenModalIcon } from 'assets/dateSelect/openModal.svg';
-import DateSelectModal from 'components/common/DateSelectModal';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
