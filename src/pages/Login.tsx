@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import onBoardingLogo from 'asset/login/logo.png';
+import onBoardingLogo from 'assets/login/logo.png';
 
 export default function Login() {
   const onClickKakaoLogin = () => {
@@ -16,7 +16,7 @@ export default function Login() {
 
   const kakaoClientID = process.env.REACT_APP_KAKAO_CLIENT_ID;
   const kakaoRedirectURI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
-  const kakaoLoginURL = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientID}&redirect_uri=${kakaoRedirectURI}&response_type=code`;
+  const kakaoLoginURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoClientID}&redirect_uri=${kakaoRedirectURI}`;
 
   return (
     <LoginPageContainer>
@@ -42,6 +42,7 @@ export default function Login() {
     </LoginPageContainer>
   );
 }
+
 const LoginPageContainer = styled.div`
   padding-top: 80px;
 `;

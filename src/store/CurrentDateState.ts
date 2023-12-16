@@ -1,10 +1,8 @@
+import dayjs, { Dayjs } from 'dayjs';
 import { atom } from 'recoil';
+import locale from 'dayjs/locale/ko';
 
-interface CurrentDate {
-  currentDate: Date;
-}
-
-export const CurrentDateState = atom<CurrentDate>({
+export const CurrentDateState = atom<Dayjs>({
   key: 'CurrentDateState',
-  default: { currentDate: new Date() },
+  default: dayjs(new Date()).locale({ ...locale }),
 });

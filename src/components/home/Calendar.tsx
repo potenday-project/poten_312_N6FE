@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import locale from 'dayjs/locale/ko';
 import { useRecoilValue } from 'recoil';
 import { CurrentDateState } from 'store/CurrentDateState';
 import weekdayPlugin from 'dayjs/plugin/weekday';
@@ -10,39 +9,41 @@ import styled from 'styled-components';
 
 export default function Calendar() {
   const currentDate = useRecoilValue(CurrentDateState);
-  const now = dayjs(currentDate.currentDate).locale({ ...locale });
-  const [currentMonth, setCurrentMonth] = useState(now);
   const [arrayOfDays, setArrayOfDays] = useState<any>([]);
+
   dayjs.extend(weekdayPlugin);
   dayjs.extend(objectPlugin);
   dayjs.extend(isTodayPlugin);
 
   useEffect(() => {
     getAllDays();
-  }, [currentMonth]);
+  }, [currentDate]);
 
   const renderDays = () => {
-    const week = [];
     const dateFormat = 'dd';
     const days = [];
 
     for (let i = 0; i < 7; i++) {
-      days.push(<WeekDay key={i}>{now.weekday(i).format(dateFormat)}</WeekDay>);
+      days.push(
+        <WeekDay key={i}>{currentDate.weekday(i).format(dateFormat)}</WeekDay>
+      );
     }
-    return <WeekContainer className="days row">{days}</WeekContainer>;
+    return (
+      <SingleWeekContainer className="days row">{days}</SingleWeekContainer>
+    );
   };
 
   const getAllDays = () => {
-    let currentDate = currentMonth.startOf('month').weekday(0);
-    const nextMonth = currentMonth.add(1, 'month').month();
+    let firstDate = currentDate.startOf('month').weekday(0);
+    const nextMonth = currentDate.add(1, 'month').month() + 1;
 
     let allDates = [];
     let weekDates = [];
 
     let weekCounter = 1;
 
-    while (currentDate.weekday(0).toObject().months !== nextMonth) {
-      const formated = formateDateObject(currentDate);
+    while (firstDate.weekday(0).toObject().months + 1 !== nextMonth) {
+      const formated = formateDateObject(firstDate);
 
       weekDates.push(formated);
 
@@ -53,7 +54,7 @@ export default function Calendar() {
       }
 
       weekCounter++;
-      currentDate = currentDate.add(1, 'day');
+      firstDate = firstDate.add(1, 'day');
     }
 
     setArrayOfDays(allDates);
@@ -78,50 +79,16 @@ export default function Calendar() {
             }
             key={i}
           >
-            <DateNumber>
-              {/* {monthRecords && monthRecords[d.day - 1] && (
-                <div
-                  className={
-                    Number(monthRecords[d.day - 1].total) === minMax?.min
-                      ? 'min'
-                      : Number(monthRecords[d.day - 1].total) === minMax?.max
-                      ? 'max'
-                      : ''
-                  }
-                />
-              )} */}
-
-              {d.day}
-            </DateNumber>
-            {/* {monthRecords && monthRecords[d.day - 1] && (
-              <DateRecord
-                className={
-                  Number(monthRecords[d.day - 1].total) === 0
-                    ? 'zero'
-                    : Number(monthRecords[d.day - 1].total) === minMax?.min
-                    ? 'min'
-                    : Number(monthRecords[d.day - 1].total) === minMax?.max
-                    ? 'max'
-                    : ''
-                }
-              >
-                {monthRecords &&
-                  monthRecords[d.day - 1] &&
-                  formatSecondsToHHMM(Number(monthRecords[d.day - 1].total))}
-              </DateRecord>
-            )} */}
+            <DailyEmotion />
+            <DateNumber>{d.day}</DateNumber>
           </DayContainer>
         );
       });
-      rows.push(
-        <WeekContainer className="row" key={index}>
-          {days}
-        </WeekContainer>
-      );
+      rows.push(<SingleWeekContainer key={index}>{days}</SingleWeekContainer>);
       days = [];
     });
 
-    return <div>{rows}</div>;
+    return <AllWeeksContainer>{rows}</AllWeeksContainer>;
   };
 
   const formateDateObject = (date: any) => {
@@ -131,7 +98,7 @@ export default function Calendar() {
       day: clonedObject.date,
       month: clonedObject.months,
       year: clonedObject.years,
-      isCurrentMonth: clonedObject.months === currentMonth.month(),
+      isCurrentMonth: clonedObject.months === currentDate.month(),
       isCurrentDay: date.isToday(),
       isFuture: date.isAfter(),
     };
@@ -154,58 +121,64 @@ const CanlendarContainer = styled.div`
   width: 100%;
 `;
 
+const DateNumber = styled.div`
+  width: 100%;
+  text-align: center;
+  padding-top: 3px;
+  border-radius: 4px;
+`;
+
+const DailyEmotion = styled.div`
+  background-color: #d9d9d9;
+  /* background: linear-gradient(to bottom, orange 50%, cyan); */
+
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+`;
+
 const DayContainer = styled.div`
   flex-direction: column;
   font-size: 0.875rem;
   display: flex;
+  align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding-bottom: 28px;
-  color: gray;
+  color: #666666;
+  gap: 4px;
 
   &.hidden {
     opacity: 0;
   }
 
   &.disabled {
-    margin-bottom: 50px;
     color: #bababa;
+    & > ${DailyEmotion} {
+      opacity: 0;
+    }
   }
 
   &.today {
-    color: red;
+    & > ${DateNumber} {
+      background-color: #ffffff;
+      color: #000000;
+    }
   }
 `;
 
 const WeekDay = styled(DayContainer)`
-  padding-bottom: 24px;
-  color: gray;
+  padding-bottom: 8px;
+  color: #000000;
 `;
 
-const WeekContainer = styled.div`
+const SingleWeekContainer = styled.div`
   display: grid;
+  gap: 12px;
   grid-template-columns: repeat(7, 1fr);
 `;
 
-const DateNumber = styled.div`
-  position: relative;
+const AllWeeksContainer = styled.div`
+  gap: 24px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-
-  > div {
-    width: 28px;
-    height: 28px;
-    position: absolute;
-    border-radius: 100px;
-    z-index: -1;
-  }
-
-  & > div.min {
-    background-color: orange;
-  }
-
-  & > div.max {
-    background-color: mintcream;
-  }
+  flex-direction: column;
 `;

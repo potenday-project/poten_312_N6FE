@@ -2,16 +2,20 @@ import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from 'layout/DefaultLayout';
 import Login from 'pages/Login';
 import Home from 'pages/Home';
-import KakaoOauth from 'component/home/KakaoOauth';
-import NaverOauth from 'component/home/NaverOauth';
+import KakaoOauth from 'components/login/KakaoOauth';
+import NaverOauth from 'components/login/NaverOauth';
+import MainLayout from 'layout/MainLayout';
 
 export const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
     children: [
       {
-        path: '/',
-        element: <Home />,
+        element: <MainLayout />,
+        children: [
+          { path: '/', element: <Home /> },
+          { path: '/bookmark', element: <>bookmakr</> },
+        ],
       },
       { path: '/login', element: <Login /> },
       {
