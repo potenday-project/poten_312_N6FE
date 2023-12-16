@@ -1,6 +1,10 @@
 import instance from 'shared/axios';
 import * as yup from 'yup';
 
+export interface DiaryContent {
+  content: string;
+}
+
 export interface DiaryData {
   summary: string;
   content: string;
@@ -54,6 +58,10 @@ export const diaryApis = {
   },
   deleteDiary: async (diaryId: number) => {
     const response = await instance.delete(`/api/diary/${diaryId}`);
+    return response.data;
+  },
+  getDiaryAnalytics: async (diaryContent: DiaryContent) => {
+    const response = await instance.get(`api/diary/analytics`);
     return response.data;
   },
 };

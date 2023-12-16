@@ -1,10 +1,16 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { diaryApis } from '../diaryApis';
+import { DiaryContent, diaryApis } from '../diaryApis';
 
 export function useGetDiary(diaryId: number) {
   return useQuery({
     queryKey: ['diary'],
     queryFn: () => diaryApis.getDiary(diaryId),
+  });
+}
+
+export function useGetAnalytics() {
+  return useMutation({
+    mutationFn: diaryApis.getDiaryAnalytics,
   });
 }
 

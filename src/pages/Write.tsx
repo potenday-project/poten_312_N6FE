@@ -7,10 +7,13 @@ import styled from 'styled-components';
 import { DiaryDataState } from 'store/DiaryDataState';
 import { ReactComponent as OpenModalIcon } from 'assets/dateSelect/openModal.svg';
 import DateSelectModal from 'components/common/DateSelectModal';
+import { useGetAnalytics } from 'api/hook/useDiary';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { mutateAsync: requestAnalytics } = useGetAnalytics();
 
   const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
   const navigate = useNavigate();
@@ -42,7 +45,7 @@ export default function Write() {
 
         <AnalyzeBtn
           onClick={() => {
-            console.log(diaryData.content);
+            requestAnalytics({ content: diaryData.content });
           }}
         >
           일기 전송
