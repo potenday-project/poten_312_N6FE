@@ -61,7 +61,7 @@ export const diaryApis = {
     return response.data;
   },
   getDiaryAnalytics: async (diaryContent: DiaryContent) => {
-    const response = await instance.get(`api/diary/analytics`);
+    const response = await instance.post(`api/diary/analytics`, diaryContent);
     return response.data;
   },
 };
