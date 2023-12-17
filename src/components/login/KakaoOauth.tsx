@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from 'react-router';
 import instance from 'shared/axios';
-import { setItem } from 'utils/localStorage';
+import { getItem, setItem } from 'utils/localStorage';
 import { ILoginResponse } from './NaverOauth';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function KakaoOauth() {
   const location = useLocation();
   const navigate = useNavigate();
+
   const urlParams = new URLSearchParams(location.search);
   const codeValue = urlParams.get('code');
 
@@ -15,12 +16,10 @@ export default function KakaoOauth() {
       `/api/user/kakao?code=${codeValue}`
     );
 
-    if (response.data) {
-      setItem('token', response.data.Authorization);
-      setItem('id', response.data.id);
-      setItem('nickname', response.data.nickname);
-      navigate('/');
-    }
+    setItem('token', response.Authorization);
+    setItem('id', response.id);
+    setItem('nickname', response.nickname);
+    navigate('/');
   };
 
   Login();

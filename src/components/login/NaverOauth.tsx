@@ -8,7 +8,9 @@ interface TokenSet {
   nickname: string;
 }
 export interface ILoginResponse {
-  data: TokenSet;
+  Authorization: string;
+  id: string;
+  nickname: string;
 }
 
 export default function NaverOauth() {
@@ -22,12 +24,10 @@ export default function NaverOauth() {
       `/api/user/naver?code=${codeValue}`
     );
 
-    if (response.data) {
-      setItem('token', response.data.Authorization);
-      setItem('id', response.data.id);
-      setItem('nickname', response.data.nickname);
-      navigate('/');
-    }
+    setItem('token', response.Authorization);
+    setItem('id', response.id);
+    setItem('nickname', response.nickname);
+    navigate('/');
   };
 
   Login();

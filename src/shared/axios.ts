@@ -1,6 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-
-const token = localStorage.getItem('token');
+import { getItem } from 'utils/localStorage';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -9,13 +8,12 @@ const instance = axios.create({ baseURL });
 const setToken = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
+  const token = getItem('token');
   config.headers['Authorization'] = `${token}`;
   return config;
 };
 
-if (token) {
-  instance.interceptors.request.use(setToken);
-}
+instance.interceptors.request.use(setToken);
 
 instance.interceptors.response.use(
   (response) => {
