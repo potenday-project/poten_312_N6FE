@@ -9,6 +9,7 @@ export interface DiaryData {
   summary: string;
   content: string;
   emotion: string[];
+  writingDay: string;
 }
 
 export interface EditDiaryData extends Partial<DiaryData> {
@@ -23,19 +24,27 @@ export interface EditDiaryData extends Partial<DiaryData> {
 export const emotionSchema = yup.string().required();
 
 const diarySchema = yup.object({
-  id: yup.number().required(),
-  summary: yup.string().required(),
-  content: yup.string().required(),
+  diaryResponse: yup.object({
+    id: yup.number().required(),
+    summary: yup.string(),
+    content: yup.string().required(),
+    emotion: yup.array(emotionSchema).required(),
+    writingDay: yup.string(),
+    createdAt: yup.string().required(),
+    updatedAt: yup.string(),
+  }),
+});
+
+const diaryAnalyticsSchema = yup.object({
   emotion: yup.array(emotionSchema).required(),
-  writingDay: yup.string().required(),
-  createdAt: yup.string().required(),
-  updatedAt: yup.string().required(),
+  writing: yup.string(),
 });
 
 const monthlyDiarySchema = yup.array(diarySchema).required();
 
 export type Diary = yup.InferType<typeof diarySchema>;
 export type MonthlyDiary = yup.InferType<typeof monthlyDiarySchema>;
+export type DiaryAnalytics = yup.InferType<typeof diaryAnalyticsSchema>;
 
 export const diaryApis = {
   getMonthlyDiary: async (month: string) => {
@@ -45,8 +54,9 @@ export const diaryApis = {
     return monthlyDiarySchema.validate(response.data);
   },
   getDiary: async (diaryId: number) => {
-    const response = await instance.get(`/api/diary/${diaryId}`);
-    return diarySchema.validate(response.data);
+    const response = await instance.get(`/api/diary/get/${diaryId}`);
+    console.log('@', response);
+    return diarySchema.validate(response);
   },
   postDiary: async (diaryData: DiaryData) => {
     const response = await instance.post(`/api/diary`, diaryData);
@@ -62,6 +72,6 @@ export const diaryApis = {
   },
   getDiaryAnalytics: async (diaryContent: DiaryContent) => {
     const response = await instance.post(`api/diary/analytics`, diaryContent);
-    return response.data;
+    return diaryAnalyticsSchema.validate(response);
   },
 };

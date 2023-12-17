@@ -41,7 +41,8 @@ export default function Calendar() {
   useEffect(() => {
     monthly &&
       SetLoggedDate(
-        new Map(monthly.map((item) => [dayjs(item.updatedAt).date(), item]))
+        // @ts-ignore
+        new Map(monthly.map((item) => [dayjs(item.createdAt).date(), item]))
       );
   }, [monthly]);
 

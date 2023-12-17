@@ -5,13 +5,16 @@ interface FlexProps extends React.ComponentPropsWithRef<'div'> {
   justify?: 'center' | 'start' | 'end' | 'between' | 'around' | 'evenly';
   items?: 'center' | 'start' | 'end';
   flex?: 'row' | 'col';
-  wrap?: boolean;
+  wrap?: 'wrap' | 'nowrap';
   gap?: number;
   mt?: number;
 }
 
 const Flex = forwardRef<HTMLDivElement, FlexProps>(
-  ({ justify, items, flex = 'row', wrap = false, gap, mt, ...props }, ref) => {
+  (
+    { justify, items, flex = 'row', wrap = 'nowrap', gap, mt, ...props },
+    ref
+  ) => {
     return (
       <FlexContainer
         ref={ref}
@@ -44,6 +47,10 @@ const styles = {
   flex: {
     row: 'row',
     col: 'column',
+  },
+  wrap: {
+    wrap: 'wrap',
+    nowrap: 'nowrap',
   },
 };
 

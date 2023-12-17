@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { DiaryContent, diaryApis } from '../diaryApis';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { diaryApis } from '../diaryApis';
 
 export function useGetDiary(diaryId: number) {
   return useQuery({
@@ -24,7 +24,14 @@ export function useGetMonthlyDiary(month: string) {
 }
 
 export function usePostDiary() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: diaryApis.postDiary,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['diaryMonth'],
+      });
+    },
   });
 }
