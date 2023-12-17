@@ -51,7 +51,8 @@ export const diaryApis = {
     const response = await instance.get(`/api/diary/list`, {
       params: { month },
     });
-    return monthlyDiarySchema.validate(response.data);
+    // return monthlyDiarySchema.validate(response.data);
+    return response;
   },
   getDiary: async (diaryId: number) => {
     const response = await instance.get(`/api/diary/get/${diaryId}`);

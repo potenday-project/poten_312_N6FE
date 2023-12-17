@@ -1,5 +1,5 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import dayjs from 'dayjs';
+import { useRecoilState } from 'recoil';
 import { CurrentDateState } from 'store/CurrentDateState';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import objectPlugin from 'dayjs/plugin/toObject';
@@ -10,10 +10,12 @@ import { useGetMonthlyDiary } from 'api/hook/useDiary';
 import { AddIcon } from 'assets/home';
 import { useNavigate } from 'react-router-dom';
 import locale from 'dayjs/locale/ko';
+import { Emotion } from 'constants/enum';
+import { colorByEmotion } from 'components/common/EmotionLabel';
 
 export interface MonthlyDiaryRespose {
   id: number;
-  emotion: string[];
+  emotion: Emotion[];
   summary: string;
   content: string;
   writingDay: string;
@@ -37,6 +39,22 @@ export default function Calendar() {
   useEffect(() => {
     getAllDays();
   }, [currentDate]);
+
+  const generateEmotionColor = (emotion: Emotion[] | undefined) => {
+    if (!emotion) return '';
+    let emotionResult = '';
+
+    emotion.forEach((item: Emotion) => {
+      emotionResult =
+        emotionResult.length > 0
+          ? emotionResult
+              .concat(', ')
+              .concat(colorByEmotion[`${item}`].indicator)
+          : colorByEmotion[`${item}`].indicator;
+    });
+
+    return emotionResult;
+  };
 
   useEffect(() => {
     monthly &&
@@ -96,6 +114,7 @@ export default function Calendar() {
   };
 
   const renderCells = () => {
+    if (!loggedDate) return;
     const rows: any = [];
     let days: any = [];
 
@@ -108,12 +127,14 @@ export default function Calendar() {
         };
 
         const checkDiary = () => {
-          if (loggedDate?.get(d.day)) return 'logged';
+          if (loggedDate?.get(d.day)) return true;
+          else return false;
         };
 
         days.push(
           <DayContainer
-            className={`${checkToday()} ${checkDiary()}`}
+            emotionColor={generateEmotionColor(loggedDate.get(d.day)?.emotion)}
+            className={`${checkToday()} ${checkDiary() ? 'logged' : ''}`}
             onClick={() => {
               if (d.isCurrentMonth && !d.isFuture)
                 onClickDate(
@@ -124,7 +145,9 @@ export default function Calendar() {
             }}
             key={i}
           >
-            <DailyEmotion>{d.isCurrentDay && <AddIcon />}</DailyEmotion>
+            <DailyEmotion>
+              {d.isCurrentDay && !checkDiary() ? <AddIcon /> : null}
+            </DailyEmotion>
             <DateNumber>{d.day}</DateNumber>
           </DayContainer>
         );
@@ -175,7 +198,6 @@ const DateNumber = styled.div`
 
 const DailyEmotion = styled.div`
   background-color: #d9d9d9;
-  /* background: linear-gradient(to bottom, orange 50%, cyan); */
 
   width: 36px;
   height: 36px;
@@ -186,7 +208,7 @@ const DailyEmotion = styled.div`
   align-items: center;
 `;
 
-const DayContainer = styled.div`
+const DayContainer = styled.div<{ emotionColor?: string }>`
   flex-direction: column;
   font-size: 0.875rem;
   display: flex;
@@ -218,7 +240,7 @@ const DayContainer = styled.div`
     cursor: pointer;
 
     & > ${DailyEmotion} {
-      background: linear-gradient(red, blue);
+      background: ${(props) => `linear-gradient(${props.emotionColor})`};
     }
   }
 `;
