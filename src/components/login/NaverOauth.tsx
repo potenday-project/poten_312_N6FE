@@ -2,10 +2,13 @@ import { useLocation, useNavigate } from 'react-router';
 import instance from 'shared/axios';
 import { setItem } from 'utils/localStorage';
 
-export interface ILoginResponse {
+interface TokenSet {
   Authorization: string;
   id: string;
   nickname: string;
+}
+export interface ILoginResponse {
+  data: TokenSet;
 }
 
 export default function NaverOauth() {
@@ -18,10 +21,13 @@ export default function NaverOauth() {
     const response: ILoginResponse = await instance.post(
       `/api/user/naver?code=${codeValue}`
     );
-    setItem('token', response.Authorization);
-    setItem('id', response.id);
-    setItem('nickname', response.nickname);
-    navigate('/');
+
+    if (response.data) {
+      setItem('token', response.data.Authorization);
+      setItem('id', response.data.id);
+      setItem('nickname', response.data.nickname);
+      navigate('/');
+    }
   };
 
   Login();
