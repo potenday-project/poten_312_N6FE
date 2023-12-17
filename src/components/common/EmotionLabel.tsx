@@ -32,7 +32,7 @@ const labelByEmotion = {
   [Emotion.UNFAIR]: '억울한',
 };
 
-const colorByEmotion = {
+export const colorByEmotion = {
   [Emotion.COMFORTABLE]: {
     container: 'rgba(133, 224, 142, 0.20)',
     indicator: '#85E08E',
