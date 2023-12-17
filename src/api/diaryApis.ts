@@ -56,7 +56,6 @@ export const diaryApis = {
   },
   getDiary: async (diaryId: number) => {
     const response = await instance.get(`/api/diary/get/${diaryId}`);
-    console.log('@', response);
     return diarySchema.validate(response);
   },
   postDiary: async (diaryData: DiaryData) => {

@@ -42,8 +42,6 @@ export default function Calendar() {
     getAllDays();
   }, [currentDate]);
 
-  console.log(monthly, loggedDate);
-
   const generateEmotionColor = (emotion: Emotion[] | undefined) => {
     if (!emotion) return '';
     let emotionResult = '';
