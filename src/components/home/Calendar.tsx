@@ -5,7 +5,7 @@ import weekdayPlugin from 'dayjs/plugin/weekday';
 import objectPlugin from 'dayjs/plugin/toObject';
 import isTodayPlugin from 'dayjs/plugin/isToday';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useGetMonthlyDiary } from 'api/hook/useDiary';
 import { AddIcon } from 'assets/home';
 import { useNavigate } from 'react-router-dom';
@@ -34,11 +34,15 @@ export default function Calendar() {
   dayjs.extend(objectPlugin);
   dayjs.extend(isTodayPlugin);
 
-  const { data: monthly } = useGetMonthlyDiary(currentDate.format('YYYY-MM'));
+  const { data: monthly, isSuccess } = useGetMonthlyDiary(
+    currentDate.format('YYYY-MM')
+  );
 
   useEffect(() => {
     getAllDays();
   }, [currentDate]);
+
+  console.log(monthly, loggedDate);
 
   const generateEmotionColor = (emotion: Emotion[] | undefined) => {
     if (!emotion) return '';
@@ -60,9 +64,9 @@ export default function Calendar() {
     monthly &&
       SetLoggedDate(
         // @ts-ignore
-        new Map(monthly.map((item) => [dayjs(item.createdAt).date(), item]))
+        new Map(monthly.map((item) => [dayjs(item.writingDay).date(), item]))
       );
-  }, [monthly]);
+  }, [monthly, isSuccess]);
 
   const onClickDate = (isLogged: boolean, id?: number, date?: string) => {
     if (isLogged) navigate(`/diary/${id}`);
@@ -127,13 +131,20 @@ export default function Calendar() {
         };
 
         const checkDiary = () => {
-          if (loggedDate?.get(d.day)) return true;
+          if (loggedDate.get(d.day)) return true;
+          else return false;
+        };
+
+        const checkEmotionGradient = (emotion: Emotion[] | undefined) => {
+          if (!emotion) return false;
+          if (emotion.length > 1) return true;
           else return false;
         };
 
         days.push(
           <DayContainer
-            emotionColor={generateEmotionColor(loggedDate.get(d.day)?.emotion)}
+            isgradient={checkEmotionGradient(loggedDate.get(d.day)?.emotion)}
+            $emotioncolor={generateEmotionColor(loggedDate.get(d.day)?.emotion)}
             className={`${checkToday()} ${checkDiary() ? 'logged' : ''}`}
             onClick={() => {
               if (d.isCurrentMonth && !d.isFuture)
@@ -208,7 +219,10 @@ const DailyEmotion = styled.div`
   align-items: center;
 `;
 
-const DayContainer = styled.div<{ emotionColor?: string }>`
+const DayContainer = styled.div<{
+  $emotioncolor?: string;
+  isgradient?: boolean;
+}>`
   flex-direction: column;
   font-size: 0.875rem;
   display: flex;
@@ -240,7 +254,14 @@ const DayContainer = styled.div<{ emotionColor?: string }>`
     cursor: pointer;
 
     & > ${DailyEmotion} {
-      background: ${(props) => `linear-gradient(${props.emotionColor})`};
+      ${(props) =>
+        props.isgradient
+          ? css`
+              background: linear-gradient(${props.$emotioncolor});
+            `
+          : css`
+              background-color: ${props.$emotioncolor};
+            `}
     }
   }
 `;

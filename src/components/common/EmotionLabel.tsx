@@ -21,7 +21,7 @@ const labelByEmotion = {
   [Emotion.ASHAMED]: '부끄러운',
   [Emotion.EMBARASSED]: '당황한',
   [Emotion.DEPRESSED]: '우울한',
-  [Emotion.SAD]: '슬픈',
+  [Emotion.SAD]: '슬픔',
   [Emotion.REGRETTED]: '후회하는',
   [Emotion.ANNOYED]: '짜증내는',
   [Emotion.ANGRY]: '분노',

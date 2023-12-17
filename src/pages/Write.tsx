@@ -59,7 +59,7 @@ export default function Write() {
         content: diaryData.content,
         emotion: checkedEmotions,
         summary: diaryAnalytics?.writing || '',
-        writingDay: formatDate(new Date()),
+        writingDay: currentDate.format('YYYY-MM-DD'),
       },
       {
         onSuccess: () => {

@@ -5,7 +5,7 @@ export const Emotion = {
   ASHAMED: '부끄러운',
   EMBARASSED: '당황한',
   DEPRESSED: '우울한',
-  SAD: '슬픈',
+  SAD: '슬픔',
   REGRETTED: '후회하는',
   ANNOYED: '짜증내는',
   ANGRY: '분노',
