@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { CurrentDateState } from 'store/CurrentDateState';
@@ -7,10 +7,17 @@ import styled from 'styled-components';
 import { DiaryDataState } from 'store/DiaryDataState';
 import { ReactComponent as OpenModalIcon } from 'assets/dateSelect/openModal.svg';
 import DateSelectModal from 'components/common/DateSelectModal';
+import { useGetAnalytics } from 'api/hook/useDiary';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const {
+    mutateAsync: requestAnalytics,
+    isPending,
+    isSuccess,
+  } = useGetAnalytics();
 
   const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
   const navigate = useNavigate();
@@ -19,6 +26,14 @@ export default function Write() {
   const onChangeDiary = (content: string) => {
     setDiaryData((prev) => ({ ...prev, content }));
   };
+
+  if (isPending) {
+    return <>loading...</>;
+  }
+
+  if (isSuccess) {
+    return <>분석 결과 컴포넌트!</>;
+  }
 
   return (
     <WritePageContainer>
@@ -34,7 +49,8 @@ export default function Write() {
         </IconBtn>
         <WritingDayTitle>
           <div>
-            {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}월&nbsp;
+            {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}
+            월&nbsp;
             {currentDate.date()}일
           </div>
           <OpenModalIcon onClick={() => setIsOpen(true)} />
@@ -42,7 +58,7 @@ export default function Write() {
 
         <AnalyzeBtn
           onClick={() => {
-            console.log(diaryData.content);
+            requestAnalytics({ content: diaryData.content });
           }}
         >
           일기 전송
