@@ -19,6 +19,7 @@ import Button from 'components/common/Button';
 import { DiaryAnalytics } from 'api/diaryApis';
 import { getItem } from 'utils/localStorage';
 import { formatDate } from 'utils/formatDate';
+import AnalyticsLoading from 'components/login/write/Loading';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
@@ -27,6 +28,7 @@ export default function Write() {
   const [checkedEmotions, setCheckedEmotions] = useState<string[]>([]);
   const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
   const [diaryAnalytics, setDiaryAnalytics] = useState<DiaryAnalytics>();
+  const [isWriting, setIsWriting] = useState(false);
 
   const userNickname = getItem('nickname');
 
@@ -86,8 +88,14 @@ export default function Write() {
     'MM'
   )}월 ${currentDate.format('DD')}일`;
 
-  if (getAnalyticsMutation.isPending) {
-    return <>loading...</>;
+  if (getAnalyticsMutation.isPending && !isWriting) {
+    return (
+      <AnalyticsLoading
+        cancelFn={() => {
+          setIsWriting(true);
+        }}
+      />
+    );
   }
 
   const addButtonDisabled = checkedEmotions.length === 0;
