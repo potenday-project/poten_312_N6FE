@@ -11,7 +11,6 @@ export default function DefaultLayout() {
     if (!isLogin && matches[1].pathname !== '/oauth') {
       navigate('/login');
     }
-    console.log('default');
   }, []);
 
   return (
