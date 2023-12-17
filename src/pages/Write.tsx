@@ -8,10 +8,15 @@ import { DiaryDataState } from 'store/DiaryDataState';
 import { ReactComponent as OpenModalIcon } from 'assets/dateSelect/openModal.svg';
 import DateSelectModal from 'components/common/DateSelectModal';
 import { useGetAnalytics } from 'api/hook/useDiary';
+import AnalyticsLoading from 'components/login/write/Loading';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isWriting, setIsWriting] = useState<boolean>(true);
+  const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
+  const navigate = useNavigate();
+  const contentRef = useRef(null);
 
   const {
     mutateAsync: requestAnalytics,
@@ -19,61 +24,67 @@ export default function Write() {
     isSuccess,
   } = useGetAnalytics();
 
-  const [diaryData, setDiaryData] = useRecoilState(DiaryDataState);
-  const navigate = useNavigate();
-  const contentRef = useRef(null);
-
   const onChangeDiary = (content: string) => {
     setDiaryData((prev) => ({ ...prev, content }));
   };
 
-  if (isPending) {
-    return <>loading...</>;
+  if (isPending && !isWriting) {
+    return (
+      <AnalyticsLoading
+        cancelFn={() => {
+          setIsWriting(true);
+        }}
+      />
+    );
   }
 
-  if (isSuccess) {
+  if (isSuccess && !isWriting) {
     return <>분석 결과 컴포넌트!</>;
   }
 
-  return (
-    <WritePageContainer>
-      <DateSelectModal
-        isOpen={isOpen}
-        closeFn={() => {
-          setIsOpen(false);
-        }}
-      />
-      <WritePageMenu>
-        <IconBtn onClick={() => navigate(-1)}>
-          <CancleIcon />
-        </IconBtn>
-        <WritingDayTitle>
-          <div>
-            {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}
-            월&nbsp;
-            {currentDate.date()}일
-          </div>
-          <OpenModalIcon onClick={() => setIsOpen(true)} />
-        </WritingDayTitle>
-
-        <AnalyzeBtn
-          onClick={() => {
-            requestAnalytics({ content: diaryData.content });
+  if (isWriting)
+    return (
+      <WritePageContainer>
+        <DateSelectModal
+          isOpen={isOpen}
+          closeFn={() => {
+            setIsOpen(false);
           }}
-        >
-          일기 전송
-        </AnalyzeBtn>
-      </WritePageMenu>
+        />
+        <WritePageMenu>
+          <IconBtn onClick={() => navigate(-1)}>
+            <CancleIcon />
+          </IconBtn>
+          <WritingDayTitle>
+            <div>
+              {currentDate.format('YY')}년&nbsp;{currentDate.month() + 1}
+              월&nbsp;
+              {currentDate.date()}일
+            </div>
+            <OpenModalIcon onClick={() => setIsOpen(true)} />
+          </WritingDayTitle>
 
-      <WriteArea
-        ref={contentRef}
-        onChange={(event) => {
-          onChangeDiary(event.target.value);
-        }}
-        placeholder="오늘 하루 있었던 일을 작성해보아요!"
-      />
-    </WritePageContainer>
-  );
+          <AnalyzeBtn
+            onClick={() => {
+              setIsWriting(false);
+              requestAnalytics({ content: diaryData.content });
+            }}
+          >
+            일기 전송
+          </AnalyzeBtn>
+        </WritePageMenu>
+
+        <WriteArea
+          ref={contentRef}
+          onChange={(event) => {
+            onChangeDiary(event.target.value);
+          }}
+          placeholder="오늘 하루 있었던 일을 작성해보아요!"
+          value={diaryData.content}
+        />
+      </WritePageContainer>
+    );
+  else return <></>;
 }
 
 export const WritePageContainer = styled.div`
