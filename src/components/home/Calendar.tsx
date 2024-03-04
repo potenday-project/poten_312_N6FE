@@ -4,7 +4,7 @@ import { CurrentDateState } from 'store/CurrentDateState';
 import weekdayPlugin from 'dayjs/plugin/weekday';
 import objectPlugin from 'dayjs/plugin/toObject';
 import isTodayPlugin from 'dayjs/plugin/isToday';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useGetMonthlyDiary } from 'api/hook/useDiary';
 import { AddIcon } from 'assets/home';
@@ -12,23 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import locale from 'dayjs/locale/ko';
 import { Emotion } from 'constants/enum';
 import { colorByEmotion } from 'components/common/EmotionLabel';
-
-export interface MonthlyDiaryRespose {
-  id: number;
-  emotion: Emotion[];
-  summary: string;
-  content: string;
-  writingDay: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { DiaryResponse } from 'type/diaryResponse';
+import { Date, DateFormat } from 'type/date';
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useRecoilState(CurrentDateState);
-  const [arrayOfDays, setArrayOfDays] = useState<any>([]);
+  const [arrayOfDays, setArrayOfDays] = useState<Date[]>([]);
   const navigate = useNavigate();
-  const [loggedDate, SetLoggedDate] =
-    useState<Map<number, MonthlyDiaryRespose>>();
+  const [loggedDate, SetLoggedDate] = useState<Map<number, DiaryResponse>>();
 
   dayjs.extend(weekdayPlugin);
   dayjs.extend(objectPlugin);
@@ -61,8 +52,12 @@ export default function Calendar() {
   useEffect(() => {
     monthly &&
       SetLoggedDate(
-        // @ts-ignore
-        new Map(monthly.map((item) => [dayjs(item.writingDay).date(), item]))
+        new Map(
+          monthly.map((item: DiaryResponse) => [
+            dayjs(item.writingDay).date(),
+            item,
+          ])
+        )
       );
   }, [monthly, isSuccess]);
 
@@ -116,21 +111,16 @@ export default function Calendar() {
   };
 
   const renderCells = () => {
-    if (!loggedDate) return;
-    const rows: any = [];
-    let days: any = [];
+    // if (!loggedDate) return;
+    let rows: ReactElement[] = [];
+    let days: ReactElement[] = [];
 
-    arrayOfDays.forEach((week: any, index: number) => {
+    arrayOfDays.forEach((week, index: number) => {
       week.dates.forEach((d: any, i: number) => {
         const checkToday = () => {
           if (!d.isCurrentMonth) return 'hidden';
           else if (d.isCurrentDay) return 'today';
           else if (d.isFuture) return 'disabled';
-        };
-
-        const checkDiary = () => {
-          if (loggedDate.get(d.day)) return true;
-          else return false;
         };
 
         const checkEmotionGradient = (emotion: Emotion[] | undefined) => {
@@ -139,11 +129,29 @@ export default function Calendar() {
           else return false;
         };
 
+        const checkDiary = (
+          loggedDate: Map<number, DiaryResponse> | undefined
+        ) => {
+          if (!loggedDate) return false;
+          if (loggedDate.get(d.day)) return true;
+          else return false;
+        };
+
         days.push(
           <DayContainer
-            isgradient={checkEmotionGradient(loggedDate.get(d.day)?.emotion)}
-            $emotioncolor={generateEmotionColor(loggedDate.get(d.day)?.emotion)}
-            className={`${checkToday()} ${checkDiary() ? 'logged' : ''}`}
+            isgradient={
+              loggedDate
+                ? checkEmotionGradient(loggedDate.get(d.day)?.emotion)
+                : false
+            }
+            $emotioncolor={
+              loggedDate
+                ? generateEmotionColor(loggedDate.get(d.day)?.emotion)
+                : ''
+            }
+            className={`${checkToday()}  ${
+              loggedDate && loggedDate.get(d.day) ? 'logged' : ''
+            }`}
             onClick={() => {
               if (d.isCurrentMonth && !d.isFuture)
                 onClickDate(
@@ -155,7 +163,7 @@ export default function Calendar() {
             key={i}
           >
             <DailyEmotion>
-              {d.isCurrentDay && !checkDiary() ? <AddIcon /> : null}
+              {d.isCurrentDay && !checkDiary(loggedDate) ? <AddIcon /> : null}
             </DailyEmotion>
             <DateNumber>{d.day}</DateNumber>
           </DayContainer>
@@ -168,7 +176,7 @@ export default function Calendar() {
     return <AllWeeksContainer>{rows}</AllWeeksContainer>;
   };
 
-  const formateDateObject = (date: any) => {
+  const formateDateObject = (date: dayjs.Dayjs): DateFormat => {
     const clonedObject = { ...date.toObject() };
 
     const formatedObject = {

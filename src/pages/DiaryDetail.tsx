@@ -15,11 +15,10 @@ export default function DiaryDetail() {
 
   const diaryId = params.id as string;
 
-  const { data } = useGetDiary(Number(diaryId));
-  const diary = data?.diaryResponse;
+  const { data: diary, isLoading } = useGetDiary(Number(diaryId));
 
   // TODO: 로딩 UI 추가
-  if (!diary) return null;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Flex flex="col">
@@ -28,13 +27,15 @@ export default function DiaryDetail() {
           <IconButton onClick={() => navigate('/')}>
             <BackArrowIcon stroke="#333333" />
           </IconButton>
-          <HeaderTitle>{diary.createdAt.split(' ')[0]}</HeaderTitle>
+          <HeaderTitle>{diary && diary.createdAt.split(' ')[0]}</HeaderTitle>
         </Header>
-        <Content>{diary.content}</Content>
+        <Content>{diary && diary.content}</Content>
         <Flex mt={24} items="center" gap={8}>
           <img src={lollipop} alt="lollipop" />
           <Subtitle>한 줄 요약</Subtitle>
-          <Summary>{diary.summary || '요약할 내용이 없어요 :('}</Summary>
+          <Summary>
+            {diary && diary.summary ? diary.summary : '요약할 내용이 없어요 :('}
+          </Summary>
           <Flex mt={24} items="center" gap={8}>
             <img src={gaze} alt="gaze" />
             <Subtitle>이런 감정을 느꼈네요!</Subtitle>
@@ -42,9 +43,10 @@ export default function DiaryDetail() {
               일기에 기록하고 싶었던 감정이에요.
             </SummarySubtitleDescription>
             <Flex mt={12} gap={8} wrap="wrap">
-              {diary.emotion.map((item, index) => (
-                <EmotionLabel key={index} emotion={item as Emotion} />
-              ))}
+              {diary &&
+                diary.emotion.map((item: Emotion, index) => (
+                  <EmotionLabel key={index} emotion={item as Emotion} />
+                ))}
             </Flex>
           </Flex>
         </Flex>

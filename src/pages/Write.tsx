@@ -14,12 +14,10 @@ import { useCheckbox } from 'utils/hooks/useCheckbox';
 import book from 'assets/common/book.png';
 import lollipop from 'assets/common/lollipop.png';
 import gaze from 'assets/common/gaze.png';
-import Checkbox from 'components/common/Checkbox';
 import Button from 'components/common/Button';
-import { DiaryAnalytics } from 'api/diaryApis';
 import { getItem } from 'utils/localStorage';
-import { formatDate } from 'utils/formatDate';
 import AnalyticsLoading from 'components/login/write/Loading';
+import { DiaryAnalytics, DiaryContent, DiaryData } from 'type/diaryResponse';
 
 export default function Write() {
   const [currentDate] = useRecoilState(CurrentDateState);
@@ -70,7 +68,7 @@ export default function Write() {
   };
 
   const onChangeDiary = (content: string) => {
-    setDiaryData((prev) => ({ ...prev, content }));
+    setDiaryData((prev: DiaryContent) => ({ ...prev, content }));
   };
 
   const onEmotionCheckboxChange = (value: string) => {

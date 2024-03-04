@@ -1,4 +1,9 @@
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
+import { CommonResponse } from 'type/diaryResponse';
 import { getItem } from 'utils/localStorage';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
@@ -57,13 +62,20 @@ instance.interceptors.response.use(
   }
 );
 
-// const checkToken = async ({ accessToken, refreshToken, userId }) => {
-//   const response = await axios.post(`${baseURL}/user/reissue`, {
-//     accessToken,
-//     refreshToken,
-//     userId,
-//   });
-//   return response;
-// };
+export const Get = async <T>(
+  url: string,
+  config?: AxiosRequestConfig
+): Promise<AxiosResponse<CommonResponse<T>>> => {
+  const response = await instance.get(url, config);
+  return response;
+};
 
+export const Post = async <T>(
+  url: string,
+  data?: any,
+  config?: AxiosRequestConfig
+): Promise<AxiosResponse<CommonResponse<T>>> => {
+  const response = await instance.post(url, data, config);
+  return response;
+};
 export default instance;

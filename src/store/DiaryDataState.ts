@@ -1,5 +1,5 @@
-import { DiaryContent } from 'api/diaryApis';
 import { atom } from 'recoil';
+import { DiaryContent } from 'type/diaryResponse';
 
 export const DiaryDataState = atom<DiaryContent>({
   key: 'DiaryDataState',
